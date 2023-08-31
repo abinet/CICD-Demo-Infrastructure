@@ -1,0 +1,11 @@
+*.tfstate
+*.tfstate.backup
+*.tfplan
+*.lock.hcl
+.terraform/*
+
+# we want to save the provider binaries
+!.terraform/providers
+
+# we want to save the helm chart archives
+!.helm
