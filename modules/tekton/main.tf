@@ -71,3 +71,24 @@ EOT
     kubectl_manifest.tekton_dashboard
   ]
 }
+
+data "kubectl_path_documents" "tekton_ci_tasks_manifests" {
+  pattern = "${path.module}/ci-config/tasks/*.yaml"
+}
+
+resource "kubectl_manifest" "tekton_ci_tasks" {
+  for_each = toset(data.kubectl_path_documents.tekton_ci_tasks_manifests.documents)
+  yaml_body = each.value
+
+  depends_on = [
+    kubectl_manifest.tekton_ing
+  ]
+}
+
+resource "kubectl_manifest" "tekton_ci_config" {
+  yaml_body = "${file("${path.module}/ci-config/ci.yaml")}"
+
+  depends_on = [
+    kubectl_manifest.tekton_ci_tasks
+  ]
+}

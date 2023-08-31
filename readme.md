@@ -75,7 +75,8 @@
 
 ### tekton CI
 - check url in browser: https://tekton.rd.localhost
-- no login
+- no login required
+- check the sections for the new ci config objects (tasks, pipelines, etc.)
 
 ### grafana dashboard
 - check url in browser: https://grafana.rd.localhost
