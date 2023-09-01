@@ -2,7 +2,7 @@ apiVersion: tekton.dev/v1beta1
 kind: Task
 metadata:
   name: maven
-  namespace: tekton-pipelines
+  namespace: example-tekton-ci
   labels:
     app.kubernetes.io/version: "0.3"
   annotations:
@@ -28,7 +28,7 @@ spec:
     - name: MAVEN_IMAGE
       type: string
       description: Maven base image
-      default: gcr.io/cloud-builders/mvn@sha256:57523fc43394d6d9d2414ee8d1c85ed7a13460cbb268c3cd16d28cfb3859e641 #tag: latest
+      default: gcr.io/cloud-builders/mvn:latest
     - name: GOALS
       description: maven goals to run
       type: array

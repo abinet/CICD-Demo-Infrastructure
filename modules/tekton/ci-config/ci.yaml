@@ -2,7 +2,7 @@ apiVersion: tekton.dev/v1beta1
 kind: Pipeline
 metadata:
   name: example-pipeline
-  namespace: tekton-pipelines
+  namespace: example-tekton-ci
 spec:
   tasks:
   - name: git-clone
@@ -12,7 +12,7 @@ spec:
     - name: revision
       value: main
     taskRef:
-      kind: ClusterTask
+      kind: Task
       name: git-clone
     workspaces:
     - name: output
@@ -25,7 +25,7 @@ spec:
     runAfter:
     - git-clone
     taskRef:
-      kind: ClusterTask
+      kind: Task
       name: maven
     workspaces:
     - name: source
@@ -61,11 +61,11 @@ spec:
     params:
     - name: IMAGE
       value: >-
-        image-reg.svc.cluster.local:5000/piotr-cicd/sample-spring-kotlin:$(tasks.get-version.results.version)
+        image-reg.image-reg.svc.cluster.local:5000/piotr-cicd/sample-spring-kotlin:$(tasks.get-version.results.version)
     runAfter:
     - get-version
     taskRef:
-      kind: ClusterTask
+      kind: Task
       name: jib-maven
     workspaces:
     - name: source

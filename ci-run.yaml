@@ -1,0 +1,16 @@
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  name: example-pipeline-run
+  namespace: example-tekton-ci
+spec:
+  pipelineRef:
+    name: example-pipeline
+  serviceAccountName: default
+  workspaces:
+  - name: source-dir
+    persistentVolumeClaim:
+      claimName: tekton-workspace
+  - name: sonar-settings
+    configMap:
+      name: sonar-properties

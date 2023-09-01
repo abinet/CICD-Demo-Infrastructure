@@ -72,6 +72,19 @@ EOT
   ]
 }
 
+resource "kubectl_manifest" "tekton_ci_example_ns" {
+  yaml_body = <<EOT
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: example-tekton-ci
+EOT
+
+  depends_on = [
+    kubectl_manifest.tekton_ing
+  ]
+}
+
 data "kubectl_path_documents" "tekton_ci_tasks_docs" {
   pattern = "${path.module}/ci-config/tasks/*.yaml"
 }
@@ -81,7 +94,7 @@ resource "kubectl_manifest" "tekton_ci_tasks" {
   yaml_body = each.value
 
   depends_on = [
-    kubectl_manifest.tekton_ing
+    kubectl_manifest.tekton_ci_example_ns
   ]
 }
 
@@ -90,5 +103,41 @@ resource "kubectl_manifest" "tekton_ci_config" {
 
   depends_on = [
     kubectl_manifest.tekton_ci_tasks
+  ]
+}
+
+resource "kubectl_manifest" "workspace_pvc" {
+  yaml_body = <<EOT
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: tekton-workspace
+  namespace: example-tekton-ci
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+EOT
+
+  depends_on = [
+    kubectl_manifest.tekton_ci_example_ns
+  ]
+}
+
+resource "kubectl_manifest" "workspace_cm" {
+  yaml_body = <<EOT
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sonar-properties
+  namespace: example-tekton-ci
+data:
+  sonar-project.properties: sonar.organization=our-fancy-org
+EOT
+
+  depends_on = [
+    kubectl_manifest.tekton_ci_example_ns
   ]
 }

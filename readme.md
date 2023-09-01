@@ -88,3 +88,24 @@
 - check url in browser: https://grafana.rd.localhost
 - `admin:admin`
 - follow instructions - change pw to e.g. `admin1` (need to differ)
+
+## first tekton ci-run testing
+- check if all resources are deployed successfully
+- run following command to start a tekton ci run
+- ```sh
+  k apply -f ./ci-run.yaml
+  ```
+- switch to the dashboard and inspect the tasks and logs
+- check the outputs like image, version and digest
+- now we check the new image from our registry
+- for this you can use:
+  - the new image version tag: e.g. `:1.5.2`
+  - the new hash digest: e.g. `@sha256:993fa1ae17d12...`
+- ```sh
+  nerdctl pull \
+  registry.rd.localhost/piotr-cicd/sample-spring-kotlin:1.5.2 \
+  -q --insecure-registry
+  ```
+- hint: if you want to rerun the ci-run you can simply click "rerun" within the tekton dashboard or <br>
+  if you want to re-apply the manifest you need to delete the existing one or <br>
+  change the name within `ci-run.yaml` into any new one
