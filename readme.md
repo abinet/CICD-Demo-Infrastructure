@@ -109,3 +109,5 @@
 - hint: if you want to rerun the ci-run you can simply click "rerun" within the tekton dashboard or <br>
   if you want to re-apply the manifest you need to delete the existing one or <br>
   change the name within `ci-run.yaml` into any new one
+
+TODO add readme for cd part etc.
