@@ -50,6 +50,12 @@
 - switch into main directory of this git (infra)
 - ```sh
   terraform init
+
+  # run a special plan and apply to render dynamic map keys content
+  terraform plan -target=module.tekton.data.kubectl_file_documents.tekton_dashboard_manifests -out=./.tf.tfplan
+  terraform apply ./.tf.tfplan
+
+  # after that we can run all of it
   terraform plan -out=./.tf.tfplan
   terraform apply ./.tf.tfplan
   ```

@@ -28,12 +28,12 @@ resource "helm_release" "tekton" {
   ]
 }
 
-data "kubectl_path_documents" "tekton_dashboard_manifests" {
-  pattern = "${path.module}/dashboard-rw.yaml"
+data "kubectl_file_documents" "tekton_dashboard_manifests" {
+  content = file("${path.module}/dashboard-rw.yaml")
 }
 
 resource "kubectl_manifest" "tekton_dashboard" {
-  for_each = toset(data.kubectl_path_documents.tekton_dashboard_manifests.documents)
+  for_each = data.kubectl_file_documents.tekton_dashboard_manifests.manifests
   yaml_body = each.value
 
   depends_on = [
@@ -72,12 +72,12 @@ EOT
   ]
 }
 
-data "kubectl_path_documents" "tekton_ci_tasks_manifests" {
+data "kubectl_path_documents" "tekton_ci_tasks_docs" {
   pattern = "${path.module}/ci-config/tasks/*.yaml"
 }
 
 resource "kubectl_manifest" "tekton_ci_tasks" {
-  for_each = toset(data.kubectl_path_documents.tekton_ci_tasks_manifests.documents)
+  for_each = toset(data.kubectl_path_documents.tekton_ci_tasks_docs.documents)
   yaml_body = each.value
 
   depends_on = [

@@ -35,14 +35,12 @@ module "argocd" {
   ]
 }
 
-/* a bit struggle - core container can not connect to pgsql db
 module "sonarqube" {
   source = "./modules/sonarqube"
   depends_on = [
     kubectl_manifest.traefik_insecure
   ]
 }
-*/
 
 module "tekton" {
   source = "./modules/tekton"
