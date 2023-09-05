@@ -47,6 +47,44 @@
 
 # deploy infra
 
+```sh
+# this is just a note for internal - ignore it
+openssl req -new -newkey rsa:2048 -nodes -sha256 -x509 -days 365 \
+-keyout key.pem -out crt.pem \
+-addext "subjectAltName = DNS:registry.rd.localhost,DNS:image-reg.image-reg.svc.cluster.local"
+```
+
+## pre: set image registry cert as trusted
+- open windows cmd as admin
+- `wsl -d rancher-desktop -e /bin/sh`
+- ```sh
+  # just simply mark and copy the following complete block command
+  echo "-----BEGIN CERTIFICATE-----
+  MIIDtjCCAp6gAwIBAgIUYjLhj7NQ0y1DlbfiDJg+K+M/mDcwDQYJKoZIhvcNAQEL
+  BQAwRTELMAkGA1UEBhMCQVUxEzARBgNVBAgMClNvbWUtU3RhdGUxITAfBgNVBAoM
+  GEludGVybmV0IFdpZGdpdHMgUHR5IEx0ZDAeFw0yMzA5MDUxMjU2MDJaFw0yNDA5
+  MDQxMjU2MDJaMEUxCzAJBgNVBAYTAkFVMRMwEQYDVQQIDApTb21lLVN0YXRlMSEw
+  HwYDVQQKDBhJbnRlcm5ldCBXaWRnaXRzIFB0eSBMdGQwggEiMA0GCSqGSIb3DQEB
+  AQUAA4IBDwAwggEKAoIBAQDSwuWhhxlrtinkAxh5cVuioaI+ISVwFLtLCVYh0mE1
+  p/OSy1+nPS56MofG40GX+Y2v5rQMkwVL80a11CXR3EV7gf8/xN1yrHAxtjxWWOA8
+  zNcIk3Wyrb7SYYc/WKdhPoQghmtCBJpp+b3F870iwi/x0UBvrY8upB/ryY/u2UVq
+  kfjAfCF++FrQCXTLmbLJ3kDbx6trtxIbiEL2aqyLl4Jiy0SW68/0RlzObDVaBtFK
+  cJY+Mz2ALzqC2djEe5D8QEd7O4+b90DMs2oFC+QEFb+8VZJz+GBFizcx2/MFa+yM
+  Cg2lslbH2j5A7ijvw1ctI9jtBktvujwPSbqd45dwNSAjAgMBAAGjgZ0wgZowHQYD
+  VR0OBBYEFP7QdguIo0M0orYWmAmRVlq3QWWUMB8GA1UdIwQYMBaAFP7QdguIo0M0
+  orYWmAmRVlq3QWWUMA8GA1UdEwEB/wQFMAMBAf8wRwYDVR0RBEAwPoIVcmVnaXN0
+  cnkucmQubG9jYWxob3N0giVpbWFnZS1yZWcuaW1hZ2UtcmVnLnN2Yy5jbHVzdGVy
+  LmxvY2FsMA0GCSqGSIb3DQEBCwUAA4IBAQCcICdNPm0GhRTspupcBDEUb9P76zey
+  xPze+B0zHHh0ex/6uur6HbSFxyYc202DTQ3YRxBkMpFyuA3LZTG7CyYCo6J5ea2Q
+  9AnzrvWDmb6tY7NUDwCCZ0Mjdc1jSi8a+wSytxrJvormKij7a010KgFygJTmTW1l
+  zDK8VZlEUhGwJvWNeE3jwVBfyxjfBmQbfMXsas+aDmc7ZytjuDkMT3VOi9u/g1Kx
+  UAmQ8BJllPiSeSl7kFxuIQc9NPHGvmAsXlcA5/xV/tEmWjTN/3O5o91e3gudjBLA
+  gR4Be38YXWaJze3/0VvNo+h2W3XqpyPL3lJwYODrLC8OWhgWoOIDUuur
+  -----END CERTIFICATE-----" > /usr/local/share/ca-certificates/image-registry.crt
+  update-ca-certificates
+  ```
+- exit cmd, quit and restart rancher desktop
+
 ## deploy infra using terraform
 - switch into main directory of this git (infra)
 - ```sh
@@ -119,9 +157,14 @@
 - switch to the argocd dashboard and check the new application `example-app`
 - https://argo-cd.rd.localhost/applications/argocd/example-app
 - trigger the sync manually one time and simply `synchronize`
-- commit a change within the deploy git
-  - change the tag version of the image to the current one
+- demonstrate a change:
+  - commit a change within the deploy git
+  - e.g. change the tag version of the image to the current one
   - file: `deploy.yaml`
-  - line: `image: image-reg.image-reg.svc.cluster.local:5000/piotr-cicd/sample-spring-kotlin:1.5.2`
+  - line: `image: registry.rd.localhost/piotr-cicd/sample-spring-kotlin:1.5.2`
 
-TODO: continue
+## check final microservice api
+- when argocd finished syncing the resources (deployment, service and ingress)
+- check the api with a simple get request through the browser
+- https://example-app.rd.localhost/persons
+- should return a lot of persons
