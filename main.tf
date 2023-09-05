@@ -21,12 +21,14 @@ module "image_reg" {
   ]
 }
 
+/*
 module "monitoring" {
   source = "./modules/monitoring"
   depends_on = [
     kubectl_manifest.traefik_insecure
   ]
 }
+*/
 
 module "argocd" {
   source = "./modules/argocd"
@@ -35,12 +37,14 @@ module "argocd" {
   ]
 }
 
+/*
 module "sonarqube" {
   source = "./modules/sonarqube"
   depends_on = [
     kubectl_manifest.traefik_insecure
   ]
 }
+*/
 
 module "tekton" {
   source = "./modules/tekton"

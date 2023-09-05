@@ -29,15 +29,6 @@ resource "helm_release" "argocd" {
   }
 }
 
-resource "kubectl_manifest" "example_app_argo_ns" {
-  yaml_body = <<EOT
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: example-app-argo
-EOT
-}
-
 resource "kubectl_manifest" "example_app_ns" {
   yaml_body = <<EOT
 apiVersion: v1
@@ -53,9 +44,9 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: example-app
-  namespace: example-app-argo
+  namespace: argocd
 spec:
-  project: example-app
+  project: default
   source:
     repoURL: "https://github.com/DarthBlair/CICD-Demo-Deployment.git"
     targetRevision: HEAD
@@ -67,7 +58,6 @@ EOT
 
   depends_on = [
     helm_release.argocd,
-    kubectl_manifest.example_app_argo_ns,
     kubectl_manifest.example_app_ns
   ]
 }

@@ -7,9 +7,10 @@
 - execute exe - install and follow the instructions
 - install wsl (windows subsystem for linux)
 - configure rancher desktop:
-  - containerd engine
-  - wsl integration ubuntu
-  - enable cluster dns and traefik
+  - k8s version `1.25.12`
+  - `containerd` engine
+  - wsl integration `ubuntu`
+  - `enable traefik`
 - check installation:
   - open wsl client cli
   - ```sh
@@ -96,8 +97,9 @@
   k apply -f ./ci-run.yaml
   ```
 - switch to the dashboard and inspect the tasks and logs
-- check the outputs like image, version and digest
-- now we check the new image from our registry
+- https://tekton.rd.localhost/#/namespaces/example-tekton-ci/pipelineruns
+- check the outputs like `image`, `version` and `digest`
+- now we check the new image in our registry
 - for this you can use:
   - the new image version tag: e.g. `:1.5.2`
   - the new hash digest: e.g. `@sha256:993fa1ae17d12...`
@@ -106,8 +108,20 @@
   registry.rd.localhost/piotr-cicd/sample-spring-kotlin:1.5.2 \
   -q --insecure-registry
   ```
+- check all images of the registry now: https://registry.rd.localhost/v2/_catalog
+- check the tags of the new image now: https://registry.rd.localhost/v2/piotr-cicd/sample-spring-kotlin/tags/list
 - hint: if you want to rerun the ci-run you can simply click "rerun" within the tekton dashboard or <br>
   if you want to re-apply the manifest you need to delete the existing one or <br>
   change the name within `ci-run.yaml` into any new one
+- https://tekton.rd.localhost/#/namespaces/example-tekton-ci/pipelineruns
 
-TODO add readme for cd part etc.
+## setup argocd config and trigger sync
+- switch to the argocd dashboard and check the new application `example-app`
+- https://argo-cd.rd.localhost/applications/argocd/example-app
+- trigger the sync manually one time and simply `synchronize`
+- commit a change within the deploy git
+  - change the tag version of the image to the current one
+  - file: `deploy.yaml`
+  - line: `image: image-reg.image-reg.svc.cluster.local:5000/piotr-cicd/sample-spring-kotlin:1.5.2`
+
+TODO: continue
