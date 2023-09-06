@@ -102,6 +102,7 @@ metadata:
 spec:
   entryPoints:
   - websecure
+  - web
   routes:
   - match: HostSNI(`registry.rd.localhost`)
     services:

@@ -7,10 +7,13 @@
 - execute exe - install and follow the instructions
 - install wsl (windows subsystem for linux)
 - configure rancher desktop:
-  - k8s version `1.25.12`
-  - `containerd` engine
-  - wsl integration `ubuntu`
-  - `enable traefik`
+  - when not fresh installed then do a factory reset
+    - and do not keep cached data / images
+  - config:
+    - k8s version `1.24.xx`
+    - `containerd` engine
+    - wsl integration `ubuntu`
+    - `enable traefik`
 - check installation:
   - open wsl client cli
   - ```sh
@@ -139,11 +142,11 @@ openssl req -new -newkey rsa:2048 -nodes -sha256 -x509 -days 365 \
 - check the outputs like `image`, `version` and `digest`
 - now we check the new image in our registry
 - for this you can use:
-  - the new image version tag: e.g. `:1.5.2`
+  - the new image version tag: e.g. `:1.5.3`
   - the new hash digest: e.g. `@sha256:993fa1ae17d12...`
 - ```sh
   nerdctl pull \
-  registry.rd.localhost/piotr-cicd/sample-spring-kotlin:1.5.2 \
+  registry.rd.localhost/piotr-cicd/sample-spring-kotlin:1.5.3 \
   -q --insecure-registry
   ```
 - check all images of the registry now: https://registry.rd.localhost/v2/_catalog
@@ -157,14 +160,17 @@ openssl req -new -newkey rsa:2048 -nodes -sha256 -x509 -days 365 \
 - switch to the argocd dashboard and check the new application `example-app`
 - https://argo-cd.rd.localhost/applications/argocd/example-app
 - trigger the sync manually one time and simply `synchronize`
+- you can enable auto sync to not always have to click `synchronize`
 - demonstrate a change:
   - commit a change within the deploy git
   - e.g. change the tag version of the image to the current one
   - file: `deploy.yaml`
-  - line: `image: registry.rd.localhost/piotr-cicd/sample-spring-kotlin:1.5.2`
+  - line: `image: registry.rd.localhost/piotr-cicd/sample-spring-kotlin:1.5.3`
+  - switch back to the dashboard and synchronize again
+  - a new revision of the deployment will be applied (blue-green)
 
-## check final microservice api
+## check and show the final microservice api
 - when argocd finished syncing the resources (deployment, service and ingress)
 - check the api with a simple get request through the browser
 - https://example-app.rd.localhost/persons
-- should return a lot of persons
+- should return a lot of persons as json payload
