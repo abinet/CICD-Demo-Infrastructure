@@ -1,5 +1,10 @@
 # readme
 
+### git links
+- https://github.com/DarthBlair/CICD-Demo-Infrastructure
+- https://github.com/DarthBlair/CICD-Demo-App
+- https://github.com/DarthBlair/CICD-Demo-Deployment
+
 # base installations
 
 ## install rancher desktop
