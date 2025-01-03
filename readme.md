@@ -179,3 +179,9 @@ openssl req -new -newkey rsa:2048 -nodes -sha256 -x509 -days 365 \
 - check the api with a simple get request through the browser
 - https://example-app.rd.localhost/persons
 - should return a lot of persons as json payload
+
+
+## TODO
+- Add auto certificate generation
+- Fix setting admin password for ArgoCD
+- 

@@ -42,9 +42,9 @@ spec:
   generators:
   - git:
       repoURL: https://github.com/abinet/CICD-Demo-Deployment.git
-      revision: add-config
-      directories:
-      - path: apps/*/envs/*   
+      revision: main 
+      files:
+      - path: apps/*/envs/*/config.json
   template:    
     metadata:
       name: '{{index .path.segments 1}}-{{index .path.segments 3}}'   
@@ -55,22 +55,22 @@ spec:
       # Source of the application manifests
       sources:
       - repoURL: https://github.com/abinet/CICD-Demo-Deployment.git
-        targetRevision: add-config
+        targetRevision: '{{.version}}'
         path: 'apps/{{index .path.segments 1}}/helm'
         helm:
           releaseName: '{{index .path.segments 1}}'
           valueFiles:
           - '$values/apps/{{index .path.segments 1}}/envs/{{index .path.segments 3}}/values.yaml'
       - repoURL: https://github.com/abinet/CICD-Demo-Deployment.git
-        targetRevision: add-config
+        targetRevision: main
         ref: values
       syncPolicy:
         syncOptions:
         - CreateNamespace=true
       # Destination cluster and namespace to deploy the application
       destination:
-        name: '{{index .path.segments 3}}-cluster'
-        namespace: '{{index .path.segments 1}}'
+        name: '{{.cluster}}'
+        namespace: '{{.namespace}}'
 EOT
   depends_on = [
     helm_release.argocd,
